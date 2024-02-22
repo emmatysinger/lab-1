@@ -1,19 +1,162 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emma Tysinger: Personal Site and portfolio</title>
-    <link href="style.css" rel="stylesheet" />
+	<title>Vis & Society Assignment 2</title>
+	<link rel="stylesheet" href="https://vis-society.github.io/assignments/report.css" />
 </head>
+
 <body>
-    <nav>
-        <li><a href="contacts/index.html">Contacts</a></li>
-        <li><a href="project/index.html">Project</a></li>
-        <li><a href="https://github.com/emmatysinger" target="_blank">My GitHub</a></li>
-    </nav>
-    <h1>Emma Tysinger</h1>
-    <p>Hi I'm Emma! This is my personal site made for Lab-1 on 6.C85.</p>
-    <img width=500 src="images/emma.jpg"/>
+	<header>
+		<h1>
+			<small>Assignment 2</small>
+			Exploratory Data Analysis
+		</h1>
+
+		<p>
+			<strong>Emma Tysinger</strong> — <em>tysinger@mit.edu</em>
+		</p>
+	</header>
+	<main>
+		<section>
+			<h2>Subtheme: Condo Conversion</h2>
+
+			<h3>About the Dataset</h3>
+			<ol>
+				I used the Condo Conversion dataset for Boston which was curated by cleaning property assessment data from Analyze Boston. Each entry in the dataset is an instance of a condo conversion, which the curator defined as an address which had 1 entry one year and multiple entries the following year. In total there are 2245 condo conversions recorded between 2015 and 2024. For each entry there is location information (such as city, address, zip code), and property information for before and after the condo conversion (such as condition, building type, land usage, area, value, number of floors, number of condo units, etc.).
+			</ol>
+
+			<h3>Overall Analysis Questions</h3>
+			<ol>
+				<li>What is the distribution and quality of measures such as area, value and number of condo units? This question is motivated by my following questions because I want to make sure the data is clean before using this data to answer the following.</li>
+				<li>When are condo conversions happening? Understanding the timeline of condo conversions gives you insight into market trends and potential external factors influencing these conversions. It could reveal patterns related to economic cycles, policy changes, or other societal shifts, which could lead to interesting research outside of this dataset.</li>
+				<li>Are there specific neighborhoods or areas in Boston that have experienced a higher rate of condo conversions? I took an "Economics of Cities" course at Harvard last year and we discussed how the housing crisis affects suburbs vs. downtown neighborhoods differently. I'm curious to see if there will be a notable difference in terms of number of conod conversions. </li>
+				<li>Are certain building types more likely to be converted to condos? This is motivated by the Millbrook Lofts article where a 8-story apartment building was converted to condos. I assumed that condos are using townhouses or duplexes, but this article has changed my perspective. I'm curious to see what the data shows.</li>
+			</ol>
+		</section>
+
+		<section>
+			<h2>Data Quality</h2>
+			To access the data quality, I first explored different measures univariately. 
+			<figure>
+				<img src="img/land_usage_post.png" alt="" width="100%"/>
+				<figcaption>
+				This figure depicts the number of condo conversions by the post land usage classifiction. We can see that the primary land usage type is CM - Condominium Main, which is what we expect given that we are looking at buildings that are converted to condos. This verifies that the data curators assumption that addresses with 1 entry one year and multiple entries the next year constitutes a condo conversion is reasonable. Highlighted are all land usage types that refer to condos. CC = Commercial condominium. CD = Residential condominium unit. CM = Condominium main.
+				</figcaption>
+			</figure>
+
+			<figure>
+				<img src="img/CM_stats.png" alt="" width="100%"/>
+				<figcaption>
+					I further explored the data quality of all entries classified as CM post conversion using box-and-whisker plots. 
+					However I found that for all these entries a lot of the "_post" information is Null or 0. For instance, the Total Value Post, Gross Area Post is 0 for all entries with post land usage = CM (CM entries) except 1, whereas all other entries (non-CM entries) have a nonzero Total Value, Gross Tax and Gross Area Post.  This does not seem random, as there is a clear seperation in Null/zero values between CM and non-CM entries. 
+					The number of condo units seems more reasonably distributed.
+				</figcaption>
+			</figure>
+			The authors of the dataset mentioned that each year the format of the data changed, so I wanted to see if the breakdown of CM vs. all other land usage entries was uniform across years or not. 
+			<figure>
+				<img src="img/lu_year.png" alt="" width="100%"/>
+				<figcaption>
+				This figure depicts the number of condo conversions per year using a bar chart. Each year is colored by how many of the condo conversions were classified as CM land usage or non-CM land usage. 
+				There is no distinct difference between the breakdown of CM vs. non-CM condo conversions across years which suggests it is not a formatting issue between years in the original Analyza Boston property assessment data that is causing this seperation between CM and non-CM condo conversions (in terms of Null/zero entries). 
+				</figcaption>
+			</figure>
+		</section>
+
+		<section>
+			<h2>Discoveries & Insights</h2>
+			<figure>
+				<img src="img/condo_conv_tv_year.png" alt="" width="100%"/>
+				<figcaption>
+				This bar plot looks at the number of condo conversions per year and is overlayed by the sum of total value of the buildings converted to condos each year. I noticed that there are no condo conversions in 2018 which is odd. Additionally there are also few condo conversions recorded in 2020 and 2021 which makes sense because the COVID pandemic hauled almost all construction projects.
+				For the most part the total value follows the same trend as the number of condo conversions, at least after 2018. Before then, specifically in 2016 and 2017, the total value is much higher than the number of condo conversions proportionally. Looking at the data further this is because there are a few condos that have a total value of greater than $100M. 
+				Also note that the sum of the total value for 2018 is empty because there are no entries, hence why the line skips from 2017 to 2019.
+				</figcaption>
+			</figure>
+
+			<figure>
+				<img src="img/map_condo_conversions.png" alt="" width="100%"/>
+				<figcaption>
+				This map looks at the total number of condo conversions by zipcode between 2019-2024. Note that although the dataset is from 2016-2024, all condo conversion entries before 2019 do not have a zip code attribute. Therefore for all following analyses by zip code, only data from 2019-2024 is included. The color of the zip codes represents the number of condo conversions. The 4 zip codes with the highest condo conversions are 02127, 02128, 02130 and 02131 (which are South Boston, East Boston, Jamaica Plain, and Roslindale neighborhoods, respectively).
+				Interestingly, neighborhoods closer to downtown Boston, such as Kenmore, Back Bay, Downtown, Beacon Hill and the North End all have fewer condo conversions. A potential explanation could be either there's less land for new builds, or that the building types in the "suburbs" of Boston are more condusive to be converted into condos. I'll look into this next.  
+				</figcaption>
+			</figure>
+
+			Now, as a follow-up question I'm curious if specific attributes such as number of condo units and gross area also vary by location at all, and if so, in a similar manner as the number of condo conversions does. 
+
+			<figure>
+				<img src="img/number_of_condos.png" alt="" width="100%"/>
+				<figcaption>
+				This figure depicts the distribution of the number of condo units post conversion for all entries between 2019 and 2024. 
+				One of the outliers with 242 units is listed at 101 Belvidere St. Boston. Upon further investigation, this building is listed as an administration building at Northeastern University so further analysis excludes this entry. 
+				The other outlier with 169 units is listed at 47 Lagrane St. Boston is a new residential apartment building. I will keep this entry because it falls under the data curators definition of a condo conversion, although I would consider this more of an apartment building not a condo. 
+				</figcaption>
+			</figure>
+
+			<figure>
+				<img src="img/map_med_condo_units.png" alt="" width="100%"/>
+				<figcaption>
+				This map looks at the median number of condo units for all entries by zipcode between 2019 and 2024. I used the median metric here because based on the previous figure looking at the distribution of number of condo units measure, I didn't want any outliers to sckew the average.
+				It appears that the median number of condo units is uniform across all zipcodes. The only zipcode that stands out is 02215 (Kenmore) with a median of 18 units. However, this is probably due to the fact that only 2 condo conversions are recorded for this zipcode and one had 30 units
+				which sckews the median.  
+				</figcaption>
+			</figure>
+
+			<figure>
+				<img src="img/gross_area.png" alt="" width="100%"/>
+				<figcaption>
+				This figure depicts the distribution of the gross area PRIOR to conversion for all entries between 2019 and 2024 because from earlier we saw that gross area post is zeroed for all CM entries. We assume that the area of the building didn't change significantly. 
+				There are multiple entries with an area of 1 which doesn't make sense so those entries are excluded. Four of the outliers, upon looking up the addresses are hospital centers and parking garages. Those are also excluded. 
+				</figcaption>
+			</figure>
+
+			<figure>
+				<img src="img/map_gross_area.png" alt="" width="100%"/>
+				<figcaption>
+					This map looks at the median area for all entries by zipcode between 2019 and 2024. I used the median metric here because based on the previous figure looking at the distribution of gross area prior measure, I didn't want any outliers to sckew the average.
+					It appears that the median area of the buildings converted to condos is slightly higher closer to downtown boston, especially Back Bay and Kenmore neighborhoods, have higher median areas. This makes sense are there are more high rise apartment buildings in these zipcodes. 
+				</figcaption>
+			</figure>
+
+			<figure>
+				<img src="img/building_type_prior_convrate.png" alt="" width="100%"/>
+				<figcaption>
+				This figure starts to address my follow-up question about why does it seem that "suburb" zipcodes experience more condo conversions. I created a new classification of the condo conversion rate where "High" indicates the total number of condo conversions in a zipcode is more than 100. "Medium" is the total number of condo conversions in a zipcode is between 20 and 100. "Low"is the total number of condo conversions in a zipcode is less than 20.
+				The figure shows for each condo conversion rate classification, the percentage breakdown of the building types before conversion. It appears that across classifications, townhouses, duplexes and free standing buildings are some of the top converted building types. For buildings in high and medium zip codes, the most common building type is convential, which even with outside research I don't understand what these are. 
+				Although this figure is insightful, it fails to fully answer my question about the breakdown of building types in the zip codes with high and low condo conversions rates. An exterior dataset with information about all buildings and their types by zipcode, not just those converted to condos, would be needed.  
+				</figcaption>
+			</figure>
+
+			<figure>
+				<img src="img/price_area_convrate2.png" alt="" width="80%"/>
+				<figcaption>
+					This figure shows the distribution of average area per unit and average price per unit grouped by the condo conversion rate of the zipcodes that the entry is found in.
+					These two metrics I added as a calculated field to the dataset. Average area per unit is equal to the gross area/number of condo units and the average price per unit is equal to the total value/number of condo units.
+					It appears from this figure that there is no significant difference between average area per unit and price per unit across different condo conversion rate classes.
+				</figcaption>
+				
+				
+			</figure>
+
+		</section>
+
+		<section>
+			<h2>Summary</h2>
+
+			<p>
+				In conclusion, first of all I'd like to discuss the data itself. It seems that there is something wrong with the post information for most entries (null values for CM entries) which doesn't make sense. Therefore, if I were to use this dataset for my final project I would go to the original Analyze Boston property assessment data to see if the null values are also present there or if there is a problem with the cleaning code. 
+				Summarizing my analysis, there has been an increase over the years in number of condo conversions, except for the dip due to the pandemic. Looking at the map visuals, it appears that condo conversions happens in more residential/"suburb" neighborhoods of Boston compared to downtown Boston with lots of office spaces. However, this dataset didn't have complete information about building types in each zipcode (only the building types of those converted to condos) so this should be investigated further. 
+				Additionally, it appears that median gross area and number of condo units does not vary by location. Finally, The most common building types converted to condos are townhouses, duplexes, deckers, conventional and free-standing buildings. 
+			</p>	
+			<p>
+				After this exploratory analysis, there are many more questions that I'm curious about, specifically regarding the demographics of neighborhoods effected by condo conversion. 
+				<li>Have condo conversions in these areas led to the displacement of longtime residents, and if so, by how much?</li>
+				<li>What is the demographic of neighborhoods with the highest condo conversion rates?</li>
+				<li>What demographic changes, if any, have occurred in areas with high rates of condo conversions?</li>
+				<li>How has housing prices changed in neighborhoods with high condo conversion rates?</li>
+				Because demographic information by year and area, as well as pricing of other non-condo units in each area is not provided in this dataset. So in the future I'll need to join the current dataset with another to explore these questions.
+
+			</p>
+		</section>
+	</main>
 </body>
 </html>
